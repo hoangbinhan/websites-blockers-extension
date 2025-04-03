@@ -16,6 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('saveSiteSchedule').addEventListener('click', saveSiteSchedule);
   document.getElementById('cancelSiteSchedule').addEventListener('click', closeSiteScheduleModal);
 
+  // Add Enter key handler for website input
+  document.getElementById('siteUrl').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addSite();
+    }
+  });
+
   // Add event delegation for delete buttons
   document.addEventListener('click', (e) => {
     if (e.target.classList.contains('delete-btn')) {
@@ -26,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else if (e.target.classList.contains('set-schedule-btn')) {
       openSiteScheduleModal(e.target.dataset.site);
+    } else if (e.target.classList.contains('delete-schedule-btn')) {
+      deleteSiteSchedule(e.target.dataset.site);
     }
   });
 });
@@ -90,6 +100,10 @@ async function loadBlockedSites() {
       ? `Custom schedule: ${site.schedule.startTime} - ${site.schedule.endTime} (${site.schedule.days})`
       : (schedules.length === 0 ? 'Blocked at all times' : 'Using global schedule');
     
+    const scheduleButton = site.schedule 
+      ? `<button class="delete-schedule-btn" data-site="${site.url}">Delete Schedule</button>`
+      : '';
+    
     li.innerHTML = `
       <div>
         <span>${site.url}</span>
@@ -97,6 +111,7 @@ async function loadBlockedSites() {
       </div>
       <div class="site-actions">
         <button class="set-schedule-btn" data-site="${site.url}">Set Schedule</button>
+        ${scheduleButton}
         <button class="delete-btn" data-site="${site.url}">Delete</button>
       </div>
     `;
@@ -120,7 +135,7 @@ async function loadSchedules() {
     const li = document.createElement('li');
     const scheduleData = JSON.stringify(schedule).replace(/"/g, '&quot;');
     li.innerHTML = `
-      <div>
+      <div class="active-schedule-item">
         <span>${schedule.startTime} - ${schedule.endTime} (${schedule.days})</span>
         <button class="delete-btn" data-schedule="${scheduleData}">Delete</button>
       </div>
@@ -226,4 +241,17 @@ async function deleteSchedule(e) {
   } catch (error) {
     console.error('Error deleting schedule:', error);
   }
+}
+
+async function deleteSiteSchedule(siteUrl) {
+  const { blockedSites = [] } = await chrome.storage.sync.get('blockedSites');
+  const updatedSites = blockedSites.map(site => {
+    if (site.url === siteUrl) {
+      return { ...site, schedule: null };
+    }
+    return site;
+  });
+  
+  await chrome.storage.sync.set({ blockedSites: updatedSites });
+  loadBlockedSites();
 } 
