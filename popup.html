@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Website Blocker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Website Blocker</h1>
+    
+    <div class="add-site-section">
+      <h2>Add Website to Block</h2>
+      <div class="input-group">
+        <input type="text" id="siteUrl" placeholder="Enter website URL (e.g., facebook.com)">
+        <button id="addSite">Add Site</button>
+      </div>
+      <button id="addCurrentSite" class="secondary-button">Add Current Site</button>
+    </div>
+
+    <div class="schedule-section">
+      <h2>Global Schedule</h2>
+      <div class="schedule-inputs">
+        <input type="time" id="startTime">
+        <span>to</span>
+        <input type="time" id="endTime">
+        <select id="days">
+          <option value="all">All Days</option>
+          <option value="weekdays">Weekdays</option>
+          <option value="weekends">Weekends</option>
+        </select>
+      </div>
+      <button id="saveSchedule">Save Global Schedule</button>
+    </div>
+
+    <div class="blocked-sites-section">
+      <h2>Blocked Websites</h2>
+      <ul id="blockedSitesList"></ul>
+    </div>
+
+    <div class="schedule-list-section">
+      <h2>Active Schedules</h2>
+      <ul id="scheduleList"></ul>
+    </div>
+  </div>
+
+  <!-- Site Schedule Modal -->
+  <div id="siteScheduleModal" class="modal">
+    <div class="modal-content">
+      <h2>Set Site Schedule</h2>
+      <div class="schedule-inputs">
+        <input type="time" id="siteStartTime">
+        <span>to</span>
+        <input type="time" id="siteEndTime">
+        <select id="siteDays">
+          <option value="all">All Days</option>
+          <option value="weekdays">Weekdays</option>
+          <option value="weekends">Weekends</option>
+        </select>
+      </div>
+      <div class="modal-buttons">
+        <button id="saveSiteSchedule">Save Schedule</button>
+        <button id="cancelSiteSchedule" class="secondary-button">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html> 
